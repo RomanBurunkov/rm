@@ -1,0 +1,53 @@
+{
+  "name": "rm",
+  "version": "0.0.1",
+  "description": "RESOURCE MANAGER(RM): Helps to dynamicaly adds scripts and css to the page.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix --ignore-path .gitignore --config package.json source && echo Lint done."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RomanBurunkov/rm.git"
+  },
+  "author": "Roman Burunkov <romon2002@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RomanBurunkov/rm/issues"
+  },
+  "homepage": "https://github.com/RomanBurunkov/rm#readme",
+  "devDependencies": {
+    "del": "^5.1.0",
+    "eslint": "^7.4.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "gulp": "^4.0.2",
+    "gulp-rename": "^2.0.0",
+    "gulp-terser": "^1.2.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "jquery": true,
+      "es6": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 8
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "rules": {
+      "no-trailing-spaces": [
+        "error",
+        {
+          "ignoreComments": true
+        }
+      ]
+    }
+  }
+}
