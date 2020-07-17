@@ -1,6 +1,6 @@
 {
   "name": "rm",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "RESOURCE MANAGER(RM): Helps to dynamicaly adds scripts and css to the page.",
   "main": "index.js",
   "scripts": {
@@ -52,6 +52,7 @@
     }
   },
   "jest": {
-    "testMatch": ["**/test/**/*.spec.js"]
+    "testMatch": ["**/test/**/*.spec.js"],
+    "collectCoverage": true
   }
 }

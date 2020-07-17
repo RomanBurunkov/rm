@@ -2,7 +2,7 @@
  * RESOURCE MANAGER(RM): Helps to dynamicaly adds scripts and css to the page.
  * Created on 8th July 2020.
  * Author Roman Burunkov <romon2002@gmail.com>
- * version 0.0.1 of 8th July 2020.
+ * version 0.0.2 of 17th July 2020.
  */
 
 (function(instance) {
@@ -214,6 +214,8 @@
 
   if (instance.RM && instance.RM instanceof RESOURCE_MANAGER) return;
   instance.RM = new RESOURCE_MANAGER();
+
+  if (!document) return;
   document.addEventListener('DOMContentLoaded', () => {
     logMsg('Initializing Resource Manager...');
     // Инициализация текущих скриптов.
@@ -224,4 +226,4 @@
     if (instance.RM.css.length !== 0) logMsg(`Found CSS: ${instance.RM.css.length}`);
   });
 
-})(window);
+})(window || global);
