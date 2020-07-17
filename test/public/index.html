@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>RM Test page</title>
+</head>
+<body>
+  <div class="test-margin-5">
+    <label>main.js load result:</label>
+    <span id="main-result">not loaded></span>
+  </div>
+  <div class="test-margin-5">
+    <label>script1.js load result:</label>
+    <span id="script1-result">not loaded</span>
+  </div>
+  <div class="test-margin-5">
+    <label>script2.js load result:</label>
+    <span id="script2-result">not loaded</span>
+  </div>
+  <div class="test-margin-5">
+    <button id="btn1">Load script 1</button>
+    <button id="btn2">Load script 2</button>
+  </div>
+  <script src="rm/rm.js"></script>
+  <script>
+    const mainResult = document.querySelector('#main-result');
+    RM.loadScript('main.js')
+      .then(() => {
+        mainResult.textContent = 'main.js loaded';
+      })
+      .catch((e) => { mainResult.textContent = `main.js hasn't been loaded: ${e.message}`; });
+  </script>
+  <style>
+    .test-margin-5 { margin: 5px; }
+  </style>
+</body>
+</html>

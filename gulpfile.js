@@ -1,25 +1,21 @@
-const { dest, series, src, task } = require('gulp');
+const { dest, series, src } = require('gulp');
 const del = require('del');
 const rename = require('gulp-rename');
 const terser = require('gulp-terser');
 
-function clean() {
+const getFiles = (files, path = './source/', ext = 'js') => files.map(f => `${path}${f}.${ext}`);
+
+function clean(cb) {
   del(['!./build/.gitkeep', './build/**/*']);
+  return cb();
 }
 
 function minify(cb) {
-  const path = './source/';
-  const files = ['rm']
-  src(files.map(f => `${path}${f}.js`))
+  src(getFiles(['rm']))
     .pipe(terser())
     .pipe(rename({ suffix: '.min' }))
     .pipe(dest('./build/'));
   return cb();
 }
 
-function defaultTask(cb) {
-  clean();
-  minify(() => cb());
-}
-
-exports.default = defaultTask
+exports.default = series(clean, minify);

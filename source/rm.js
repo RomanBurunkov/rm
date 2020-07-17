@@ -44,8 +44,25 @@
    * @returns {Object} - resource object.
    */
   const addNewResource = (resources, url, state = 'new') => {
+    if (!url) return false;
     resources.push({ url, state });
     return resources[resources.length - 1];
+  };
+
+  /**
+   * initResources: Initialize already loaded resources.
+   * @param {} url 
+   */
+  const initResources = (resSelector, srcAttr, resources) => {
+    const elements = document.querySelectorAll(resSelector);
+    // Инициализация текущих скриптов.
+    elements.forEach((el) => {
+      const src = el.getAttribute(srcAttr);
+      if (!src) return;
+      const check = findResource(resources, src);
+      if (check && check.state !== 'rejected') return;
+      addNewResource(resources, src, 'fulfilled');
+    });
   };
 
   /**
@@ -56,7 +73,10 @@
   const loadScript = (url) => {
     const script = document.createElement('script');
     return new Promise((resolve, reject) => {
-      script.onerror = () => reject(new Error(`Failed to load script: ${url}`));
+      script.onerror = () => {
+        script.remove();
+        reject(new Error(`Failed to load script: ${url}`));
+      };
       script.onload = () => resolve();
       document.head.appendChild(script);
       script.src = url;
@@ -71,7 +91,10 @@
   const loadCss = (url) => {
     const link = document.createElement('link');
     return new Promise((resolve, reject) => {
-      link.onerror = () => reject(new Error(`Failed to load CSS: ${url}`));
+      link.onerror = () => {
+        link.remove();
+        reject(new Error(`Failed to load CSS: ${url}`));
+      };
       link.onload = () => resolve();
       link.rel = 'stylesheet';
       link.type = 'text/css';
@@ -186,23 +209,19 @@
     constructor() {
       this.css = [];
       this.scripts = [];
-      logMsg('Initializing Resource Manager...');
-      // Инициализация текущих скриптов.
-      document.querySelectorAll('script').forEach((script) => {
-        addNewResource(this.scripts, script.getAttribute('src'), 'fulfilled');
-      });
-      if (this.scripts.length) logMsg(`Found JS scripts: ${this.scripts.length}`);
-      // Инициализация текущих CSS
-      document.querySelectorAll('link[type="text/css"]').forEach((css) => {
-        addNewResource(this.css, css.getAttribute('href'), 'fulfilled');
-      });
-      if (this.css.length !== 0) logMsg(`Found CSS: ${this.css.length}`);
     }
   }
 
+  if (instance.RM && instance.RM instanceof RESOURCE_MANAGER) return;
+  instance.RM = new RESOURCE_MANAGER();
   document.addEventListener('DOMContentLoaded', () => {
-    if (instance.RM && instance.RM instanceof RESOURCE_MANAGER) return;
-    instance.RM = new RESOURCE_MANAGER();
+    logMsg('Initializing Resource Manager...');
+    // Инициализация текущих скриптов.
+    initResources('script', 'src', instance.RM.scripts);
+    if (instance.RM.scripts.length) logMsg(`Found JS scripts: ${instance.RM.scripts.length}`);
+    // Инициализация текущих CSS
+    initResources('link[type="text/css"]', 'href', instance.RM.css);
+    if (instance.RM.css.length !== 0) logMsg(`Found CSS: ${instance.RM.css.length}`);
   });
 
 })(window);
