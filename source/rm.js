@@ -2,10 +2,13 @@
  * RESOURCE MANAGER(RM): Helps to dynamicaly adds scripts and css to the page.
  * Created on 8th July 2020.
  * Author Roman Burunkov <romon2002@gmail.com>
- * version 0.0.2 of 17th July 2020.
+ * version 0.0.3 of 24th July 2020.
  */
 
-(function(instance) {
+;(function(instance) {
+  // On a high load some browsers can load script for ages because of low priority.
+  // Setting importace attribute can help resolving that.
+  const SCRIPT_IMPORTANCE = 'high';
   // Maximum files to add when loading from an array.
   const MAX_RECURSIVE_LOAD = 20;
   // RM logging styles 0 - time, 1 - prefix, 2 - message text.
@@ -72,6 +75,7 @@
    */
   const loadScript = (url) => {
     const script = document.createElement('script');
+    script.setAttribute('importance', SCRIPT_IMPORTANCE);
     return new Promise((resolve, reject) => {
       script.onerror = () => {
         script.remove();
@@ -218,10 +222,10 @@
   if (!document) return;
   document.addEventListener('DOMContentLoaded', () => {
     logMsg('Initializing Resource Manager...');
-    // Инициализация текущих скриптов.
+    // Initialize already added scripts.
     initResources('script', 'src', instance.RM.scripts);
     if (instance.RM.scripts.length) logMsg(`Found JS scripts: ${instance.RM.scripts.length}`);
-    // Инициализация текущих CSS
+    // Initialize already added CSS.
     initResources('link[type="text/css"]', 'href', instance.RM.css);
     if (instance.RM.css.length !== 0) logMsg(`Found CSS: ${instance.RM.css.length}`);
   });

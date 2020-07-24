@@ -1,6 +1,6 @@
 {
   "name": "rm",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "RESOURCE MANAGER(RM): Helps to dynamicaly adds scripts and css to the page.",
   "main": "index.js",
   "scripts": {
