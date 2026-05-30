@@ -1,11 +1,12 @@
 {
   "name": "rm",
-  "version": "0.0.3",
-  "description": "RESOURCE MANAGER(RM): Helps to dynamicaly adds scripts and css to the page.",
+  "version": "0.0.4",
+  "description": "RESOURCE MANAGER(RM): Helps to dynamically add scripts and CSS to the page.",
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint --fix --ignore-path .gitignore --config package.json source && echo Lint done."
+    "lint": "eslint --fix --ignore-path .gitignore --config package.json source && echo Lint done.",
+    "build": "gulp"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
   "eslintConfig": {
     "env": {
       "browser": true,
+      "node": true,
       "es6": true
     },
     "parserOptions": {
