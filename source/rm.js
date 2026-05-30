@@ -1,37 +1,50 @@
 /**
- * RESOURCE MANAGER(RM): Helps to dynamicaly adds scripts and css to the page.
+ * RESOURCE MANAGER(RM): Helps to dynamically add scripts and CSS to the page.
  * Created on 8th July 2020.
  * Author Roman Burunkov <romon2002@gmail.com>
- * version 0.0.3 of 24th July 2020.
+ * version 0.0.4 of 30th May 2026.
  */
 
+// eslint-disable-next-line no-extra-semi
 ;(function(instance) {
   // On a high load some browsers can load script for ages because of low priority.
-  // Setting importace attribute can help resolving that.
+  // Setting importance attribute can help resolving that.
   const SCRIPT_IMPORTANCE = 'high';
   // Maximum files to add when loading from an array.
   const MAX_RECURSIVE_LOAD = 20;
-  // RM logging styles 0 - time, 1 - prefix, 2 - message text.
-  const logStyles = ['color:green;', 'color:blue;', 'color:black;'];
+
+  /** RM logging styles for light theme: [time, prefix, message text] */
+  const LOG_STYLES_LIGHT = ['color:green;', 'color:blue;', 'color:black;'];
+  /** RM logging styles for dark theme: [time, prefix, message text] */
+  const LOG_STYLES_DARK = ['color:yellow;', 'color:teal;', 'color:lightgray;'];
 
   /**
-   * logMsg: Logging module's messages.
+   * Gets the appropriate log styles based on the current color scheme.
+   * @returns {Array.<string>} - an array of log styles.
+   */
+  function getLogStyles() {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return isDark ? LOG_STYLES_DARK : LOG_STYLES_LIGHT;
+  }
+
+  /**
+   * logMsg: Logs module's messages.
    * @param {string} msg - message to log.
    */
   const logMsg = (msg) => {
-    const date = new Date;
+    const date = new Date();
     const hh = `${date.getHours()}`.padStart(2, '0');
     const mm = `${date.getMinutes()}`.padStart(2, '0');
     const ss = `${date.getSeconds()}`.padStart(2, '0');
     // eslint-disable-next-line no-console
-    console.log(`%c[${hh}:${mm}:${ss}] %cRM%c::${msg}`, ...logStyles);
+    console.log(`%c[${hh}:${mm}:${ss}] %cRM%c::${msg}`, ...getLogStyles());
   }
 
   /**
-   * findResource: Searchs resource by it's url.
-   * @param {Array.<Object>} resources - an array of resources(scripts, css, etc...).
-   * @param {string} url - resource url to search.
-   * @returns {boolean|Object} - resource object or false in case resource has not been found.
+   * findResource: Searches for a resource by its URL.
+   * @param {Array.<Object>} resources - an array of resources (scripts, CSS, etc.).
+   * @param {string} url - resource URL to search for.
+   * @returns {boolean|Object} - resource object or false if the resource is not found.
    */
   const findResource = (resources, url) => {
     if (!Array.isArray(resources)) return false;
@@ -42,8 +55,8 @@
   /**
    * addNewResource: Adds new resource to the resources array.
    * @param {Array.<Object>} resources - resources array.
-   * @param {string} url - resource url. 
-   * @param {string} state - resurce state: new/pending/fulfilled/rejected.
+   * @param {string} url - resource URL. 
+   * @param {string} state - resource state: new/pending/fulfilled/rejected.
    * @returns {Object} - resource object.
    */
   const addNewResource = (resources, url, state = 'new') => {
@@ -54,11 +67,13 @@
 
   /**
    * initResources: Initialize already loaded resources.
-   * @param {} url 
+   * @param {string} resSelector - CSS selector for the resources.
+   * @param {string} srcAttr - attribute name for the resource URL.
+   * @param {Array.<Object>} resources - resources array.
    */
   const initResources = (resSelector, srcAttr, resources) => {
     const elements = document.querySelectorAll(resSelector);
-    // Инициализация текущих скриптов.
+    // Existing scripts initialization.
     elements.forEach((el) => {
       const src = el.getAttribute(srcAttr);
       if (!src) return;
@@ -69,9 +84,9 @@
   };
 
   /**
-   * loadScript: adds javascript to the page.
-    * @param {string} url 
-    * @return {Promise} - a promise which resolves after script added to the page.
+   * loadScript: Adds javascript to the page.
+   * @param {string} url - URL of the script to load.
+   * @return {Promise} - a promise which resolves after script added to the page.
    */
   const loadScript = (url) => {
     const script = document.createElement('script');
@@ -88,9 +103,9 @@
   };
 
   /**
-   * loadCss: adds CSS to the page.
-    * @param {string} url 
-    * @return {Promise} - a promise which resolves after CSS file added to the page.
+   * loadCss: Adds CSS to the page.
+   * @param {string} url - URL of the CSS file to load.
+   * @return {Promise<void>} - a promise which resolves after CSS file added to the page.
    */
   const loadCss = (url) => {
     const link = document.createElement('link');
@@ -109,10 +124,10 @@
 
   /**
    * recursiveLoad: Recursively loads an array of files by array order.
-   * @param {Array.<string>} urls - array of files urls. 
+   * @param {Array.<string>} urls - array of files URLs. 
    * @param {*} loadMethod - method to load a file.
    * @param {*} counter - counter to check limits.
-   * @return {Promise} - Resolves when all files has been added.
+   * @return {Promise<void>} - Resolves when all files has been added.
    */
   function recursiveLoad(urls, loadMethod, counter = 0) {
     if (!Array.isArray(urls) || urls.length === 0) return Promise.resolve();
